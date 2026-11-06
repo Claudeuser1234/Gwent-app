@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
-# Baut release/Gwent-Fraktionen.apk ohne Android Studio.
+# Baut die Android-Apps ohne Android Studio.
+#
+#   bash android/build.sh            # beide Apps
+#   bash android/build.sh fraktionen # nur Gwent Fraktionen
+#   bash android/build.sh plus       # nur Gwent Plus
+#
 # Braucht: bash, curl, unzip, python3, Java (JDK 11+), Node.js 18+, openssl.
 # Die Werkzeuge (aapt2, android.jar, dx, APK-Signierer) werden beim ersten Lauf
 # nach android/.tools geladen.
@@ -12,9 +17,12 @@ set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(dirname "$HERE")"
 TOOLS="$HERE/.tools"
-BUILD="$HERE/build"
 KEYS="$HERE/keys"
 mkdir -p "$TOOLS" "$KEYS"
+
+declare -A APK_NAME=( [fraktionen]="Gwent-Fraktionen.apk" [plus]="Gwent-Plus.apk" )
+APPS=("${@:-fraktionen plus}")
+APPS=(${APPS[@]})
 
 # --- Werkzeuge -----------------------------------------------------------
 if [ ! -f "$TOOLS/android.jar" ]; then
@@ -45,18 +53,24 @@ if [ ! -f "$KEYS/key.pem" ]; then
 fi
 
 # --- Build ---------------------------------------------------------------
-rm -rf "$BUILD"; mkdir -p "$BUILD/compiled" "$BUILD/classes" "$BUILD/assets"
-cp "$ROOT/web/index.html" "$BUILD/assets/index.html"
+build_app() {
+  local app="$1" src="$ROOT/apps/$1" build="$HERE/build/$1"
+  [ -d "$src" ] || { echo "Unbekannte App: $app (fraktionen oder plus)"; exit 1; }
+  rm -rf "$build"; mkdir -p "$build/compiled" "$build/classes" "$build/assets"
+  cp "$src/index.html" "$build/assets/index.html"
 
-"$TOOLS/aapt2" compile --dir "$HERE/res" -o "$BUILD/compiled/"
-"$TOOLS/aapt2" link -I "$TOOLS/android.jar" --manifest "$HERE/AndroidManifest.xml" \
-  -A "$BUILD/assets" -o "$BUILD/base.apk" "$BUILD"/compiled/*.flat
+  "$TOOLS/aapt2" compile --dir "$src/res" -o "$build/compiled/"
+  "$TOOLS/aapt2" link -I "$TOOLS/android.jar" --manifest "$src/AndroidManifest.xml" \
+    -A "$build/assets" -o "$build/base.apk" "$build"/compiled/*.flat
 
-javac --release 8 -nowarn -cp "$TOOLS/android.jar" -d "$BUILD/classes" $(find "$HERE/src" -name '*.java')
-(cd "$BUILD/classes" && jar cf ../classes.jar .)
-sh "$TOOLS/dex-tools/d2j-jar2dex.sh" -f -o "$BUILD/classes.dex" "$BUILD/classes.jar" >/dev/null
+  javac --release 8 -nowarn -cp "$TOOLS/android.jar" -d "$build/classes" $(find "$src/src" -name '*.java')
+  (cd "$build/classes" && jar cf ../classes.jar .)
+  sh "$TOOLS/dex-tools/d2j-jar2dex.sh" -f -o "$build/classes.dex" "$build/classes.jar" >/dev/null
 
-python3 "$HERE/align.py" "$BUILD/base.apk" "$BUILD/classes.dex" "$BUILD/unsigned.apk"
-mkdir -p "$ROOT/release"
-node "$TOOLS/sign.mjs" "$BUILD/unsigned.apk" "$ROOT/release/Gwent-Fraktionen.apk" "$KEYS/key.pem" "$KEYS/cert.pem"
-echo "Fertig: release/Gwent-Fraktionen.apk"
+  python3 "$HERE/align.py" "$build/base.apk" "$build/classes.dex" "$build/unsigned.apk"
+  mkdir -p "$ROOT/release"
+  node "$TOOLS/sign.mjs" "$build/unsigned.apk" "$ROOT/release/${APK_NAME[$app]}" "$KEYS/key.pem" "$KEYS/cert.pem" >/dev/null
+  echo "Fertig: release/${APK_NAME[$app]}"
+}
+
+for app in "${APPS[@]}"; do build_app "$app"; done
