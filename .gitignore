@@ -1,0 +1,4 @@
+android/.tools/
+android/build/
+android/keys/
+node_modules/
