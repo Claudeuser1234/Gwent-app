@@ -1,0 +1,53 @@
+name: Release erstellen
+
+# Legt bei jeder neuen APK in release/ ein GitHub-Release an (bzw. aktualisiert es).
+# Der Tag richtet sich nach der Version von Gwent Plus, z. B. v1.1.
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'release/**'
+      - '.github/workflows/release.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Versionen lesen
+        id: v
+        run: |
+          plus=$(grep -o 'android:versionName="[^"]*"' apps/plus/AndroidManifest.xml | cut -d'"' -f2)
+          frak=$(grep -o 'android:versionName="[^"]*"' apps/fraktionen/AndroidManifest.xml | cut -d'"' -f2)
+          echo "plus=$plus" >> "$GITHUB_OUTPUT"
+          echo "frak=$frak" >> "$GITHUB_OUTPUT"
+
+      - name: Release mit APKs erstellen
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.v.outputs.plus }}
+          name: Gwent Apps v${{ steps.v.outputs.plus }}
+          make_latest: true
+          files: |
+            release/Gwent-Plus.apk
+            release/Gwent-Fraktionen.apk
+          body: |
+            ## Gwent Plus ${{ steps.v.outputs.plus }}
+            - Punkte werden komplett manuell eingetragen, keine automatische Rundenauswertung
+            - 3–5 Spieler: Siegpunkte als goldene Rauten unten im Feld zum Antippen, goldener Rahmen bei erreichtem Ziel
+            - Duell: 2 Rubine pro Spieler zum Antippen
+            - Zähler füllen den ganzen Bildschirm, Tischansicht für Tablet in der Tischmitte
+            - Zahnrad in der Mitte: Punkte auf 0, Edelsteine auffüllen / Siegpunkte auf 0, Rückgängig, Neues Spiel
+            - Halten auf − / + zählt in 10er-Schritten
+
+            ## Gwent Fraktionen ${{ steps.v.outputs.frak }}
+            - Zufällige Fraktion für 1–5 Spieler, mit Kartenbildern und Verlauf
+
+            ## Installation
+            APK auf dem Android-Gerät öffnen und die Installation aus unbekannter Quelle erlauben. Ab Android 7.
+            Neue Versionen installieren sich als Update über die alte.
