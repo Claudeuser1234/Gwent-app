@@ -13,13 +13,15 @@ Beide Apps lassen sich gleichzeitig installieren und laufen komplett offline.
 
 **Seite 1, Neues Spiel:** Du wählst den Spielmodus, die Spielerzahl und die Namen. Die Fraktionen tippst du an oder lässt sie auslosen. „Spiel starten“ öffnet den Punktezähler.
 
-**Seite 2, Punktezähler:** Jeder Spieler bekommt ein Feld in seiner Fraktionsfarbe, mit dem Fraktionssymbol oben in der Ecke.
+**Seite 2, Punktezähler:** Jeder Spieler bekommt ein Feld in seiner Fraktionsfarbe, mit dem Fraktionssymbol oben in der Ecke. Die Felder füllen den ganzen Bildschirm. Die App rechnet nichts automatisch aus, ihr tragt alles selbst ein.
 
 - **− / + tippen:** ±1
 - **Halten:** ±10, und weiter ±10, solange du hältst
 - **Zahl antippen:** Wert direkt eingeben
-- **Pfeil:** macht das letzte Rundenende rückgängig
-- **Zurück-Taste von Android:** führt vom Zähler zurück zur Einrichtung
+- **Duell:** Wer eine Runde verliert, tippt einen seiner 2 Rubine an.
+- **3 bis 5 Spieler:** Die Siegpunkte stehen als goldene Rauten unten im Feld. Eine Raute antippen setzt die Siegpunkte bis dorthin. Die oberste leuchtende Raute nochmal antippen nimmt einen Punkt weg. Ist das Ziel erreicht, bekommt das Feld einen goldenen Rahmen.
+- **Zahnrad in der Mitte:** öffnet das Menü mit „Alle Punkte auf 0“, „Edelsteine auffüllen“ bzw. „Siegpunkte auf 0“, „Rückgängig“ und „Neues Spiel“.
+- **Zurück-Taste von Android:** schliesst das Menü oder führt vom Zähler zurück zur Einrichtung.
 
 Der Bildschirm bleibt an, solange die App offen ist.
 
@@ -27,15 +29,13 @@ Der Bildschirm bleibt an, solange die App offen ist.
 
 **Duell (2 Spieler).** Jeder hat 2 Edelsteine. Wer eine Runde verliert, gibt einen ab. Bei Gleichstand verlieren beide einen, ausser einer spielt Nilfgaard: Nilfgaard gewinnt dann die Runde.
 
-**Alle gegen Alle (3 bis 5 Spieler).** Es gibt keine Rundenbegrenzung. Am Rundenende bekommt jeder 1 Siegpunkt für jeden Gegner, dessen Stärke er übertrifft. Gleichstand zählt nicht, ausser für Nilfgaard. Spielen mehrere Nilfgaard und haben gleich viel, bekommen sie je 1 Punkt.
+**Alle gegen Alle (3 bis 5 Spieler).** Am Rundenende bekommt jeder 1 Siegpunkt für jeden Gegner, dessen Stärke er übertrifft. Gleichstand zählt nicht, ausser für Nilfgaard.
 
 | Spieler | Ziel |
 | --- | --- |
 | 3 | 4 Siegpunkte |
 | 4 | 5 Siegpunkte |
 | 5 | 6 Siegpunkte |
-
-Erreichen mehrere Spieler das Ziel, gewinnt der mit mehr Siegpunkten. Bei Gleichstand an der Spitze geht es weiter. Wer die erste Runde beginnt, lost die App aus. Danach beginnt, wer in der Vorrunde die meisten Punkte geholt hat. Schlägt der Norden mindestens 2 Gegner, erinnert die App ans Kartenziehen.
 
 ### Tischansicht
 
